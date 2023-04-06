@@ -1,0 +1,23 @@
+[workspace]
+members = [
+    "shotover-bin",
+    "redis-get-rewrite",
+    "kafka-fetch-rewrite",
+]
+
+# https://deterministic.space/high-performance-rust.html
+[profile.release]
+lto = "fat"
+codegen-units = 1
+
+[profile.bench]
+lto = "fat"
+codegen-units = 1
+
+[workspace.dependencies]
+shotover = { git = "https://github.com/rukai/shotover-proxy", branch = "kafka_offset_fetch", features = ["alpha-transforms"] }
+anyhow = "1.0.42"
+serde = { version = "1.0.111", features = ["derive"] }
+tracing = "0.1.15"
+async-trait = "0.1.30"
+typetag = "0.2.5"

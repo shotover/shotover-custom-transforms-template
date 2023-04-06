@@ -1,0 +1,19 @@
+[package]
+name = "shotover-bin"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+shotover.workspace = true
+redis-get-rewrite = { path = "../redis-get-rewrite" }
+kafka-fetch-rewrite = { path = "../kafka-fetch-rewrite" }
+tokio-bin-process = "0.1.0"
+rdkafka = "0.29.0"
+
+[dev-dependencies]
+test-helpers = { git = "https://github.com/rukai/shotover-proxy", branch = "docker_compose_split" }
+tokio = { version = "1.25.0", features = ["full", "macros"] }
+redis = { version = "0.22.0", features = ["tokio-comp", "cluster"] }

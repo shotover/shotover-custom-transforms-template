@@ -1,0 +1,18 @@
+[package]
+name = "kafka-fetch-rewrite"
+version = "0.0.1"
+edition = "2021"
+license = "Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+# Define dependencies at the workspace level to ensure that multiple transforms in the same workspace are on compatible dependency versions
+[dependencies]
+shotover.workspace = true
+anyhow.workspace = true
+serde.workspace = true
+async-trait.workspace = true
+tracing.workspace = true
+typetag.workspace = true
+bytes = "1.4.0"
+kafka-protocol = "0.6.0"
