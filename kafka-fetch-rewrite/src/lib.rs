@@ -5,9 +5,9 @@ use kafka_protocol::records::{
     Compression, RecordBatchDecoder, RecordBatchEncoder, RecordEncodeOptions,
 };
 use serde::Deserialize;
-use shotover::error::ChainResponse;
 use shotover::frame::kafka::{KafkaFrame, ResponseBody};
 use shotover::frame::Frame;
+use shotover::message::Messages;
 use shotover::transforms::{Transform, TransformBuilder, TransformConfig, Transforms, Wrapper};
 
 #[derive(Deserialize, Debug, Clone)]
@@ -48,7 +48,7 @@ pub struct KafkaFetchRewrite {
 
 #[async_trait]
 impl Transform for KafkaFetchRewrite {
-    async fn transform<'a>(&'a mut self, message_wrapper: Wrapper<'a>) -> ChainResponse {
+    async fn transform<'a>(&'a mut self, message_wrapper: Wrapper<'a>) -> Result<Messages> {
         let mut responses = message_wrapper.call_next_transform().await?;
 
         for response in &mut responses {

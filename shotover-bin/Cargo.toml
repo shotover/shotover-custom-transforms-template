@@ -14,6 +14,6 @@ tokio-bin-process = "0.1.0"
 rdkafka = "0.29.0"
 
 [dev-dependencies]
-test-helpers = { git = "https://github.com/rukai/shotover-proxy", branch = "docker_compose_split" }
+docker-compose-runner = { git = "https://github.com/shotover/docker-compose-runner" }
 tokio = { version = "1.25.0", features = ["full", "macros"] }
 redis = { version = "0.22.0", features = ["tokio-comp", "cluster"] }

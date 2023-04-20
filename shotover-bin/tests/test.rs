@@ -1,8 +1,8 @@
 mod kafka;
 mod redis;
 
+use docker_compose_runner::{DockerCompose, Image};
 use std::time::Duration;
-use test_helpers::docker_compose_runner::{DockerCompose, Image};
 use tokio_bin_process::event::Level;
 use tokio_bin_process::event_matcher::EventMatcher;
 use tokio_bin_process::BinProcess;
