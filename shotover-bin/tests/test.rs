@@ -15,7 +15,7 @@ fn docker_compose(yaml_path: &str) -> DockerCompose {
                 log_regex_to_wait_for: r"Ready to accept connections",
             },
             Image {
-                name: "bitnami/kafka:3.3.2",
+                name: "bitnami/kafka:3.4.0-debian-11-r22",
                 log_regex_to_wait_for: r"Kafka Server started",
             },
         ],
