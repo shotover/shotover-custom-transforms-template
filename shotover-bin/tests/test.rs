@@ -5,7 +5,7 @@ use docker_compose_runner::{DockerCompose, Image};
 use std::time::Duration;
 use tokio_bin_process::event::Level;
 use tokio_bin_process::event_matcher::EventMatcher;
-use tokio_bin_process::BinProcess;
+use tokio_bin_process::{bin_path, BinProcess};
 
 fn docker_compose(yaml_path: &str) -> DockerCompose {
     DockerCompose::new(
@@ -25,8 +25,8 @@ fn docker_compose(yaml_path: &str) -> DockerCompose {
 }
 
 async fn shotover(topology_path: &str) -> BinProcess {
-    let mut shotover = BinProcess::start_with_args(
-        "shotover-bin",
+    let mut shotover = BinProcess::start_binary(
+        bin_path!("shotover-bin"),
         "shotover",
         &["-t", topology_path, "--log-format", "json"],
     )
