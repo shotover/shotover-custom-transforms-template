@@ -15,7 +15,7 @@ lto = "fat"
 codegen-units = 1
 
 [workspace.dependencies]
-shotover = { git = "https://github.com/shotover/shotover-proxy", features = ["alpha-transforms"] }
+shotover = { version = "0.1.11", features = ["alpha-transforms"] }
 anyhow = "1.0.42"
 serde = { version = "1.0.111", features = ["derive"] }
 tracing = "0.1.15"
