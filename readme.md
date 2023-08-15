@@ -1,5 +1,7 @@
 # Shotover Custom Transforms Template
 
+[![dependency status](https://deps.rs/repo/github/shotover/shotover-custom-transforms-template/status.svg)](https://deps.rs/repo/github/shotover/shotover-custom-transforms-template)
+
 This repo is a template from which you can build your own shotover custom transform.
 To get started just run `git clone https://github.com/shotover/shotover-custom-transforms-template`.
 
