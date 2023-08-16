@@ -12,7 +12,7 @@ async fn test_kafka_fetch_rewrite() {
     let shotover = shotover("kafka-fetch-rewrite-config/topology.yaml").await;
 
     // Verify functionality of transform
-    produce_consume("localhost:9192", "foo").await;
+    produce_consume("127.0.0.1:9192", "foo").await;
 
     // Shutdown shotover asserting that it encountered no errors
     shotover.shutdown_and_then_consume_events(&[]).await;
