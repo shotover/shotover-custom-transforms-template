@@ -13,10 +13,12 @@ fn docker_compose(yaml_path: &str) -> DockerCompose {
             Image {
                 name: "library/redis:5.0.9",
                 log_regex_to_wait_for: r"Ready to accept connections",
+                timeout: 120,
             },
             Image {
                 name: "bitnami/kafka:3.4.0-debian-11-r22",
                 log_regex_to_wait_for: r"Kafka Server started",
+                timeout: 120,
             },
         ],
         |_| {},
