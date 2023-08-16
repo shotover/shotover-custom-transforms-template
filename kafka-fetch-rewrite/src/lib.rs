@@ -11,6 +11,7 @@ use shotover::message::Messages;
 use shotover::transforms::{Transform, TransformBuilder, TransformConfig, Transforms, Wrapper};
 
 #[derive(Deserialize, Debug, Clone)]
+#[serde(deny_unknown_fields)]
 pub struct KafkaFetchRewriteConfig {
     pub result: String,
 }
