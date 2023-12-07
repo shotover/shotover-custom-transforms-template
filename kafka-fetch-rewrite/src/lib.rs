@@ -4,19 +4,19 @@ use bytes::{Bytes, BytesMut};
 use kafka_protocol::records::{
     Compression, RecordBatchDecoder, RecordBatchEncoder, RecordEncodeOptions,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use shotover::frame::kafka::{KafkaFrame, ResponseBody};
 use shotover::frame::Frame;
 use shotover::message::Messages;
 use shotover::transforms::{Transform, TransformBuilder, TransformConfig, Transforms, Wrapper};
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct KafkaFetchRewriteConfig {
     pub result: String,
 }
 
-#[typetag::deserialize(name = "KafkaFetchRewrite")]
+#[typetag::serde(name = "KafkaFetchRewrite")]
 #[async_trait(?Send)]
 impl TransformConfig for KafkaFetchRewriteConfig {
     async fn get_builder(&self, _chain_name: String) -> Result<Box<dyn TransformBuilder>> {
