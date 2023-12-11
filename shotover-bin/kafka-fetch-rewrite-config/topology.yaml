@@ -1,14 +1,11 @@
 ---
 sources:
-  kafka_source:
-    Kafka:
+  - Kafka:
+      name: "kafka"
       listen_addr: "127.0.0.1:9192"
-chain_config:
-  main_chain:
-    - KafkaFetchRewrite:
-        result: "Rewritten value"
-    - KafkaSinkSingle:
-        remote_address: "127.0.0.1:9092"
-        connect_timeout_ms: 3000
-source_to_chain_mapping:
-  kafka_source: main_chain
+      chain:
+        - KafkaFetchRewrite:
+            result: "Rewritten value"
+        - KafkaSinkSingle:
+            destination_port: 9092
+            connect_timeout_ms: 3000
