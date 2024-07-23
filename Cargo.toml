@@ -16,7 +16,7 @@ lto = "fat"
 codegen-units = 1
 
 [workspace.dependencies]
-shotover = { version = "0.2.0", features = ["alpha-transforms"] }
+shotover = { version = "0.4.0" }
 anyhow = "1.0.42"
 serde = { version = "1.0.111", features = ["derive"] }
 tracing = "0.1.15"

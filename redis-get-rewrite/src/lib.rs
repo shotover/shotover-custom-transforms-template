@@ -1,9 +1,12 @@
 use anyhow::Result;
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
-use shotover::frame::{Frame, RedisFrame};
+use shotover::frame::{Frame, MessageType, RedisFrame};
 use shotover::message::Messages;
-use shotover::transforms::{Transform, TransformBuilder, TransformConfig, Transforms, Wrapper};
+use shotover::transforms::{
+    DownChainProtocol, Transform, TransformBuilder, TransformConfig, TransformContextBuilder,
+    TransformContextConfig, UpChainProtocol, Wrapper,
+};
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -11,13 +14,25 @@ pub struct RedisGetRewriteConfig {
     pub result: String,
 }
 
+const NAME: &str = "RedisGetRewrite";
 #[typetag::serde(name = "RedisGetRewrite")]
 #[async_trait(?Send)]
 impl TransformConfig for RedisGetRewriteConfig {
-    async fn get_builder(&self, _chain_name: String) -> Result<Box<dyn TransformBuilder>> {
+    async fn get_builder(
+        &self,
+        _transform_context: TransformContextConfig,
+    ) -> Result<Box<dyn TransformBuilder>> {
         Ok(Box::new(RedisGetRewriteBuilder {
             result: self.result.clone(),
         }))
+    }
+
+    fn up_chain_protocol(&self) -> UpChainProtocol {
+        UpChainProtocol::MustBeOneOf(vec![MessageType::Redis])
+    }
+
+    fn down_chain_protocol(&self) -> DownChainProtocol {
+        DownChainProtocol::SameAsUpChain
     }
 }
 
@@ -27,14 +42,14 @@ pub struct RedisGetRewriteBuilder {
 }
 
 impl TransformBuilder for RedisGetRewriteBuilder {
-    fn build(&self) -> Transforms {
-        Transforms::Custom(Box::new(RedisGetRewrite {
+    fn build(&self, _transform_context: TransformContextBuilder) -> Box<dyn Transform> {
+        Box::new(RedisGetRewrite {
             result: self.result.clone(),
-        }))
+        })
     }
 
     fn get_name(&self) -> &'static str {
-        "RedisGetRewrite"
+        NAME
     }
 }
 
@@ -44,6 +59,10 @@ pub struct RedisGetRewrite {
 
 #[async_trait]
 impl Transform for RedisGetRewrite {
+    fn get_name(&self) -> &'static str {
+        NAME
+    }
+
     async fn transform<'a>(&'a mut self, mut message_wrapper: Wrapper<'a>) -> Result<Messages> {
         let mut get_indices = vec![];
         for (i, message) in message_wrapper.requests.iter_mut().enumerate() {

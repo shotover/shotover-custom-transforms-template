@@ -6,9 +6,12 @@ use kafka_protocol::records::{
 };
 use serde::{Deserialize, Serialize};
 use shotover::frame::kafka::{KafkaFrame, ResponseBody};
-use shotover::frame::Frame;
+use shotover::frame::{Frame, MessageType};
 use shotover::message::Messages;
-use shotover::transforms::{Transform, TransformBuilder, TransformConfig, Transforms, Wrapper};
+use shotover::transforms::{
+    DownChainProtocol, Transform, TransformBuilder, TransformConfig, TransformContextBuilder,
+    TransformContextConfig, UpChainProtocol, Wrapper,
+};
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -16,13 +19,25 @@ pub struct KafkaFetchRewriteConfig {
     pub result: String,
 }
 
+const NAME: &str = "KafkaFetchRewrite";
 #[typetag::serde(name = "KafkaFetchRewrite")]
 #[async_trait(?Send)]
 impl TransformConfig for KafkaFetchRewriteConfig {
-    async fn get_builder(&self, _chain_name: String) -> Result<Box<dyn TransformBuilder>> {
+    async fn get_builder(
+        &self,
+        _transform_context: TransformContextConfig,
+    ) -> Result<Box<dyn TransformBuilder>> {
         Ok(Box::new(KafkaFetchRewriteBuilder {
             result: self.result.clone(),
         }))
+    }
+
+    fn up_chain_protocol(&self) -> UpChainProtocol {
+        UpChainProtocol::MustBeOneOf(vec![MessageType::Kafka])
+    }
+
+    fn down_chain_protocol(&self) -> DownChainProtocol {
+        DownChainProtocol::SameAsUpChain
     }
 }
 
@@ -32,14 +47,14 @@ pub struct KafkaFetchRewriteBuilder {
 }
 
 impl TransformBuilder for KafkaFetchRewriteBuilder {
-    fn build(&self) -> Transforms {
-        Transforms::Custom(Box::new(KafkaFetchRewrite {
+    fn build(&self, _transform_context: TransformContextBuilder) -> Box<dyn Transform> {
+        Box::new(KafkaFetchRewrite {
             result: self.result.clone(),
-        }))
+        })
     }
 
     fn get_name(&self) -> &'static str {
-        "KafkaFetchRewrite"
+        NAME
     }
 }
 
@@ -49,6 +64,10 @@ pub struct KafkaFetchRewrite {
 
 #[async_trait]
 impl Transform for KafkaFetchRewrite {
+    fn get_name(&self) -> &'static str {
+        NAME
+    }
+
     async fn transform<'a>(&'a mut self, message_wrapper: Wrapper<'a>) -> Result<Messages> {
         let mut responses = message_wrapper.call_next_transform().await?;
 
