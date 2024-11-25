@@ -12,8 +12,8 @@ redis-get-rewrite = { path = "../redis-get-rewrite" }
 kafka-fetch-rewrite = { path = "../kafka-fetch-rewrite" }
 
 [dev-dependencies]
-tokio-bin-process = "0.5.0"
+tokio-bin-process = "0.6.0"
 docker-compose-runner = "0.3.0"
 tokio = { version = "1.28.0", features = ["full", "macros"] }
-redis = { version = "0.24.0", features = ["tokio-comp", "cluster"] }
+redis = { version = "0.27.0", features = ["tokio-comp", "cluster"] }
 rdkafka = "0.36.0"

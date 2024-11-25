@@ -1,26 +1,18 @@
 use crate::{docker_compose, shotover};
-use redis::aio::{AsyncStream, Connection};
-use redis::{Cmd, RedisConnectionInfo};
-use std::pin::Pin;
+use redis::aio::MultiplexedConnection;
+use redis::Cmd;
 
-pub async fn assert_ok(cmd: &mut Cmd, connection: &mut Connection) {
+pub async fn assert_ok(cmd: &mut Cmd, connection: &mut MultiplexedConnection) {
     assert_eq!(cmd.query_async(connection).await, Ok("OK".to_string()));
 }
 
-pub async fn assert_bytes(cmd: &mut Cmd, connection: &mut Connection, value: &[u8]) {
+pub async fn assert_bytes(cmd: &mut Cmd, connection: &mut MultiplexedConnection, value: &[u8]) {
     assert_eq!(cmd.query_async(connection).await, Ok(value.to_vec()));
 }
 
-pub async fn redis_connection(port: u16) -> redis::aio::Connection {
-    let address = "127.0.0.1";
-    let stream = tokio::net::TcpStream::connect((address, port))
-        .await
-        .unwrap();
-    let stream = Box::pin(stream) as Pin<Box<dyn AsyncStream + Send + Sync>>;
-
-    redis::aio::Connection::new(&RedisConnectionInfo::default(), stream)
-        .await
-        .unwrap()
+pub async fn redis_connection(port: u16) -> redis::aio::MultiplexedConnection {
+    let client = redis::Client::open(format!("redis://127.0.0.1:{port}")).unwrap();
+    client.get_multiplexed_tokio_connection().await.unwrap()
 }
 
 #[tokio::test(flavor = "multi_thread")]

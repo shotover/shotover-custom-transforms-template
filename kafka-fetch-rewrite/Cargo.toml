@@ -15,4 +15,4 @@ async-trait.workspace = true
 tracing.workspace = true
 typetag.workspace = true
 bytes = "1.4.0"
-kafka-protocol = "0.10.0"
+kafka-protocol = "0.13.0"
