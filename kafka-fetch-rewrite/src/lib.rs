@@ -9,8 +9,8 @@ use shotover::frame::kafka::{KafkaFrame, ResponseBody};
 use shotover::frame::{Frame, MessageType};
 use shotover::message::Messages;
 use shotover::transforms::{
-    DownChainProtocol, Transform, TransformBuilder, TransformConfig, TransformContextBuilder,
-    TransformContextConfig, UpChainProtocol, Wrapper,
+    ChainState, DownChainProtocol, Transform, TransformBuilder, TransformConfig,
+    TransformContextBuilder, TransformContextConfig, UpChainProtocol,
 };
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -68,8 +68,11 @@ impl Transform for KafkaFetchRewrite {
         NAME
     }
 
-    async fn transform<'a>(&'a mut self, message_wrapper: Wrapper<'a>) -> Result<Messages> {
-        let mut responses = message_wrapper.call_next_transform().await?;
+    async fn transform<'shorter, 'longer: 'shorter>(
+        &mut self,
+        chain_state: &'shorter mut ChainState<'longer>,
+    ) -> Result<Messages> {
+        let mut responses = chain_state.call_next_transform().await?;
 
         for response in &mut responses {
             if let Some(Frame::Kafka(KafkaFrame::Response {
@@ -80,9 +83,10 @@ impl Transform for KafkaFetchRewrite {
                 for response in &mut fetch.responses {
                     for partition in &mut response.partitions {
                         if let Some(records_bytes) = &mut partition.records {
-                            if let Ok(mut records) =
-                                RecordBatchDecoder::decode(&mut records_bytes.clone())
-                            {
+                            if let Ok(mut records) = RecordBatchDecoder::decode(
+                                &mut records_bytes.clone(),
+                                None::<fn(&mut bytes::Bytes, Compression) -> Result<Bytes>>,
+                            ) {
                                 for record in &mut records {
                                     if record.value.is_some() {
                                         record.value =
@@ -98,6 +102,9 @@ impl Transform for KafkaFetchRewrite {
                                         version: 0, // TODO: get this from somewhere
                                         compression: Compression::None,
                                     },
+                                    None::<
+                                        fn(&mut BytesMut, &mut BytesMut, Compression) -> Result<()>,
+                                    >,
                                 )?;
                                 *records_bytes = new_bytes.freeze();
                             }

@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 use shotover::frame::{Frame, MessageType, RedisFrame};
 use shotover::message::Messages;
 use shotover::transforms::{
-    DownChainProtocol, Transform, TransformBuilder, TransformConfig, TransformContextBuilder,
-    TransformContextConfig, UpChainProtocol, Wrapper,
+    ChainState, DownChainProtocol, Transform, TransformBuilder, TransformConfig,
+    TransformContextBuilder, TransformContextConfig, UpChainProtocol,
 };
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -63,16 +63,19 @@ impl Transform for RedisGetRewrite {
         NAME
     }
 
-    async fn transform<'a>(&'a mut self, mut message_wrapper: Wrapper<'a>) -> Result<Messages> {
+    async fn transform<'shorter, 'longer: 'shorter>(
+        &mut self,
+        chain_state: &'shorter mut ChainState<'longer>,
+    ) -> Result<Messages> {
         let mut get_indices = vec![];
-        for (i, message) in message_wrapper.requests.iter_mut().enumerate() {
+        for (i, message) in chain_state.requests.iter_mut().enumerate() {
             if let Some(frame) = message.frame() {
                 if is_get(frame) {
                     get_indices.push(i);
                 }
             }
         }
-        let mut responses = message_wrapper.call_next_transform().await?;
+        let mut responses = chain_state.call_next_transform().await?;
 
         for i in get_indices {
             if let Some(frame) = responses[i].frame() {
