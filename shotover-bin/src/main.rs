@@ -1,4 +1,4 @@
-shotover::import_transform!(redis_get_rewrite::RedisGetRewriteConfig);
+shotover::import_transform!(valkey_get_rewrite::ValkeyGetRewriteConfig);
 shotover::import_transform!(kafka_fetch_rewrite::KafkaFetchRewriteConfig);
 
 fn main() {

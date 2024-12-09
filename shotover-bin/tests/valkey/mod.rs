@@ -10,17 +10,17 @@ pub async fn assert_bytes(cmd: &mut Cmd, connection: &mut MultiplexedConnection,
     assert_eq!(cmd.query_async(connection).await, Ok(value.to_vec()));
 }
 
-pub async fn redis_connection(port: u16) -> redis::aio::MultiplexedConnection {
+pub async fn valkey_connection(port: u16) -> redis::aio::MultiplexedConnection {
     let client = redis::Client::open(format!("redis://127.0.0.1:{port}")).unwrap();
     client.get_multiplexed_tokio_connection().await.unwrap()
 }
 
 #[tokio::test(flavor = "multi_thread")]
-async fn test_redis_get_rewrite() {
+async fn test_valkey_get_rewrite() {
     // Setup shotover and the redis server it connects to
-    let _compose = docker_compose("redis-get-rewrite-config/docker-compose.yaml");
-    let shotover = shotover("redis-get-rewrite-config/topology.yaml").await;
-    let mut connection = redis_connection(6379).await;
+    let _compose = docker_compose("valkey-get-rewrite-config/docker-compose.yaml");
+    let shotover = shotover("valkey-get-rewrite-config/topology.yaml").await;
+    let mut connection = valkey_connection(6379).await;
 
     // Verify functionality of transform
     assert_ok(

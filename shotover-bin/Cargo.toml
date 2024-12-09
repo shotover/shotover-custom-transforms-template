@@ -8,7 +8,7 @@ license = "Apache-2.0"
 
 [dependencies]
 shotover.workspace = true
-redis-get-rewrite = { path = "../redis-get-rewrite" }
+valkey-get-rewrite = { path = "../valkey-get-rewrite" }
 kafka-fetch-rewrite = { path = "../kafka-fetch-rewrite" }
 
 [dev-dependencies]
@@ -16,4 +16,4 @@ tokio-bin-process = "0.6.0"
 docker-compose-runner = "0.3.0"
 tokio = { version = "1.28.0", features = ["full", "macros"] }
 redis = { version = "0.27.0", features = ["tokio-comp", "cluster"] }
-rdkafka = "0.36.0"
+rdkafka = "0.37.0"
