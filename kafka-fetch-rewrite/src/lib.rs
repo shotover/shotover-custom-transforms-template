@@ -83,10 +83,12 @@ impl Transform for KafkaFetchRewrite {
                 for response in &mut fetch.responses {
                     for partition in &mut response.partitions {
                         if let Some(records_bytes) = &mut partition.records {
-                            if let Ok(mut records) = RecordBatchDecoder::decode(
-                                &mut records_bytes.clone(),
-                                None::<fn(&mut bytes::Bytes, Compression) -> Result<Bytes>>,
-                            ) {
+                            if let Ok(mut records) =
+                                RecordBatchDecoder::decode::<
+                                    _,
+                                    fn(&mut bytes::Bytes, Compression) -> Result<Bytes>,
+                                >(&mut records_bytes.clone())
+                            {
                                 for record in &mut records {
                                     if record.value.is_some() {
                                         record.value =
@@ -95,16 +97,17 @@ impl Transform for KafkaFetchRewrite {
                                 }
 
                                 let mut new_bytes = BytesMut::new();
-                                RecordBatchEncoder::encode(
+                                RecordBatchEncoder::encode::<
+                                    _,
+                                    _,
+                                    fn(&mut BytesMut, &mut BytesMut, Compression) -> Result<()>,
+                                >(
                                     &mut new_bytes,
                                     records.iter(),
                                     &RecordEncodeOptions {
                                         version: 0, // TODO: get this from somewhere
                                         compression: Compression::None,
                                     },
-                                    None::<
-                                        fn(&mut BytesMut, &mut BytesMut, Compression) -> Result<()>,
-                                    >,
                                 )?;
                                 *records_bytes = new_bytes.freeze();
                             }

@@ -1,5 +1,5 @@
 mod kafka;
-mod redis;
+mod valkey;
 
 use docker_compose_runner::{DockerCompose, Image};
 use std::time::Duration;

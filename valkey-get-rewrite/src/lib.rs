@@ -1,7 +1,7 @@
 use anyhow::Result;
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
-use shotover::frame::{Frame, MessageType, RedisFrame};
+use shotover::frame::{Frame, MessageType, ValkeyFrame};
 use shotover::message::Messages;
 use shotover::transforms::{
     ChainState, DownChainProtocol, Transform, TransformBuilder, TransformConfig,
@@ -10,25 +10,25 @@ use shotover::transforms::{
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
-pub struct RedisGetRewriteConfig {
+pub struct ValkeyGetRewriteConfig {
     pub result: String,
 }
 
-const NAME: &str = "RedisGetRewrite";
-#[typetag::serde(name = "RedisGetRewrite")]
+const NAME: &str = "ValkeyGetRewrite";
+#[typetag::serde(name = "ValkeyGetRewrite")]
 #[async_trait(?Send)]
-impl TransformConfig for RedisGetRewriteConfig {
+impl TransformConfig for ValkeyGetRewriteConfig {
     async fn get_builder(
         &self,
         _transform_context: TransformContextConfig,
     ) -> Result<Box<dyn TransformBuilder>> {
-        Ok(Box::new(RedisGetRewriteBuilder {
+        Ok(Box::new(ValkeyGetRewriteBuilder {
             result: self.result.clone(),
         }))
     }
 
     fn up_chain_protocol(&self) -> UpChainProtocol {
-        UpChainProtocol::MustBeOneOf(vec![MessageType::Redis])
+        UpChainProtocol::MustBeOneOf(vec![MessageType::Valkey])
     }
 
     fn down_chain_protocol(&self) -> DownChainProtocol {
@@ -37,13 +37,13 @@ impl TransformConfig for RedisGetRewriteConfig {
 }
 
 #[derive(Clone)]
-pub struct RedisGetRewriteBuilder {
+pub struct ValkeyGetRewriteBuilder {
     result: String,
 }
 
-impl TransformBuilder for RedisGetRewriteBuilder {
+impl TransformBuilder for ValkeyGetRewriteBuilder {
     fn build(&self, _transform_context: TransformContextBuilder) -> Box<dyn Transform> {
-        Box::new(RedisGetRewrite {
+        Box::new(ValkeyGetRewrite {
             result: self.result.clone(),
         })
     }
@@ -53,12 +53,12 @@ impl TransformBuilder for RedisGetRewriteBuilder {
     }
 }
 
-pub struct RedisGetRewrite {
+pub struct ValkeyGetRewrite {
     result: String,
 }
 
 #[async_trait]
-impl Transform for RedisGetRewrite {
+impl Transform for ValkeyGetRewrite {
     fn get_name(&self) -> &'static str {
         NAME
     }
@@ -89,8 +89,8 @@ impl Transform for RedisGetRewrite {
 }
 
 fn is_get(frame: &Frame) -> bool {
-    if let Frame::Redis(RedisFrame::Array(array)) = frame {
-        if let Some(RedisFrame::BulkString(first)) = array.first() {
+    if let Frame::Valkey(ValkeyFrame::Array(array)) = frame {
+        if let Some(ValkeyFrame::BulkString(first)) = array.first() {
             first.eq_ignore_ascii_case(b"GET")
         } else {
             false
@@ -102,5 +102,5 @@ fn is_get(frame: &Frame) -> bool {
 
 fn rewrite_get(frame: &mut Frame, result: &str) {
     tracing::info!("Replaced {frame:?} with BulkString(\"{result}\")");
-    *frame = Frame::Redis(RedisFrame::BulkString(result.to_owned().into()));
+    *frame = Frame::Valkey(ValkeyFrame::BulkString(result.to_owned().into()));
 }
