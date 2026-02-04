@@ -1,11 +1,11 @@
 ---
 sources:
   - Valkey:
-      name: "valkey"
-      listen_addr: "127.0.0.1:6379"
+      name: valkey
+      listen_addr: "0.0.0.0:6380"
       chain:
-        - ValkeyGetRewrite:
-            result: "Rewritten value"
+        - ValkeyClusterPortsRewrite:
+             new_port: 6380
         - ValkeySinkSingle:
-            remote_address: "127.0.0.1:1111"
+            remote_address: "0.0.0.0:6379"
             connect_timeout_ms: 3000

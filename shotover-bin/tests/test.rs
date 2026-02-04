@@ -13,12 +13,12 @@ fn docker_compose(yaml_path: &str) -> DockerCompose {
 
 pub static IMAGE_WAITERS: [Image; 2] = [
     Image {
-        name: "library/redis:5.0.9",
+        name: "bitnamilegacy/valkey-cluster:7.2.5-debian-12-r4",
         log_regex_to_wait_for: r"Ready to accept connections",
         timeout: Duration::from_secs(120),
     },
     Image {
-        name: "bitnami/kafka:3.4.0-debian-11-r22",
+        name: "bitnamilegacy/kafka:3.9.0-debian-12-r6",
         log_regex_to_wait_for: r"Kafka Server started",
         timeout: Duration::from_secs(120),
     },
