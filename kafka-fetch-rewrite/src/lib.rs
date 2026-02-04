@@ -84,9 +84,7 @@ impl Transform for KafkaFetchRewrite {
                     for partition in &mut response.partitions {
                         if let Some(records_bytes) = &mut partition.records {
                             if let Ok(mut records) =
-                                RecordBatchDecoder::decode::<
-                                    _,
-                                >(&mut records_bytes.clone())
+                                RecordBatchDecoder::decode::<_>(&mut records_bytes.clone())
                             {
                                 for record in &mut records.records {
                                     if record.value.is_some() {
@@ -96,10 +94,7 @@ impl Transform for KafkaFetchRewrite {
                                 }
 
                                 let mut new_bytes = BytesMut::new();
-                                RecordBatchEncoder::encode::<
-                                    _,
-                                    _,
-                                >(
+                                RecordBatchEncoder::encode::<_, _>(
                                     &mut new_bytes,
                                     records.records.iter(),
                                     &RecordEncodeOptions {
