@@ -20,13 +20,13 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: Ubuntu 20.04 - Release
-            runner: ubuntu-20.04
+          - name: Ubuntu 24.04 - Release
+            runner: ubuntu-24.04
             cargo_flags: --release
             test_flags: --skip cassandra_int_tests
 
-          - name: Ubuntu 20.04 - Debug
-            runner: ubuntu-20.04
+          - name: Ubuntu 24.04 - Debug
+            runner: ubuntu-24.04
             cargo_flags:
             test_flags: --skip cassandra_int_tests
 
