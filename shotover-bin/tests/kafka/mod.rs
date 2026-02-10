@@ -4,8 +4,10 @@ use rdkafka::consumer::{Consumer, StreamConsumer};
 use rdkafka::producer::{FutureProducer, FutureRecord};
 use rdkafka::Message;
 use std::time::Duration;
+use serial_test::serial;
 
 #[tokio::test(flavor = "multi_thread")]
+#[serial]
 async fn test_kafka_fetch_rewrite() {
     // Setup shotover and the kafka server it connects to
     let _compose = docker_compose("kafka-fetch-rewrite-config/docker-compose.yaml");

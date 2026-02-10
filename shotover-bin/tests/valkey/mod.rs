@@ -1,6 +1,7 @@
 use crate::{docker_compose, shotover};
 use redis::aio::MultiplexedConnection;
 use redis::Cmd;
+use serial_test::serial;
 
 pub async fn assert_ok(cmd: &mut Cmd, connection: &mut MultiplexedConnection) {
     assert_eq!(cmd.query_async(connection).await, Ok("OK".to_string()));
@@ -16,6 +17,7 @@ pub async fn valkey_connection(port: u16) -> redis::aio::MultiplexedConnection {
 }
 
 #[tokio::test(flavor = "multi_thread")]
+#[serial]
 async fn test_valkey_get_rewrite() {
     // Setup shotover and the redis server it connects to
     let _compose = docker_compose("valkey-get-rewrite-config/docker-compose.yaml");
