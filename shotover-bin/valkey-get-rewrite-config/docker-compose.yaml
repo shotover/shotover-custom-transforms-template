@@ -8,4 +8,4 @@ services:
       - '6379:6379'
     volumes:
       - type: tmpfs
-        target: /bitnamilegacy/valkey
+        target: /bitnami/valkey/data

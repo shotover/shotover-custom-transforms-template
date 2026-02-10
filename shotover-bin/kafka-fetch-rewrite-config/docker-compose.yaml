@@ -17,4 +17,4 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     volumes:
       - type: tmpfs
-        target: /bitnamilegacy/kafka
+        target: /bitnami/kafka
