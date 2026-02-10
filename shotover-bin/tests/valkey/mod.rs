@@ -12,7 +12,7 @@ pub async fn assert_bytes(cmd: &mut Cmd, connection: &mut MultiplexedConnection,
 }
 
 pub async fn valkey_connection(port: u16) -> redis::aio::MultiplexedConnection {
-    let client = redis::Client::open(format!("redis://127.0.0.1:{port}")).unwrap();
+    let client = redis::Client::open(format!("redis://172.16.1.2:{port}")).unwrap();
     client.get_multiplexed_tokio_connection().await.unwrap()
 }
 
