@@ -13,7 +13,7 @@ fn docker_compose(yaml_path: &str) -> DockerCompose {
 
 pub static IMAGE_WAITERS: [Image; 2] = [
     Image {
-        name: "bitnamilegacy/valkey-cluster:7.2.5-debian-12-r4",
+        name: "bitnamilegacy/valkey:7.2.5-debian-12-r8",
         log_regex_to_wait_for: r"Ready to accept connections",
         timeout: Duration::from_secs(120),
     },
