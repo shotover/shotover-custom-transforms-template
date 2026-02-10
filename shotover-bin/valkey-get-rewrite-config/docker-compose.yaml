@@ -1,32 +1,10 @@
 services:
   valkey-node-0:
     image: bitnamilegacy/valkey-cluster:7.2.5-debian-12-r4
-    networks:
-      valkey_subnet:
-        ipv4_address: 172.15.1.2
+    ports:
+      - '6379:6379'
     environment:
       - 'ALLOW_EMPTY_PASSWORD=yes'
-      - 'VALKEY_NODES=valkey-node-0'
-      
-  valkey-cluster-init:
-    image: bitnamilegacy/valkey-cluster:7.2.5-debian-12-r4
-    networks:
-      valkey_subnet:
-        ipv4_address: 172.15.1.8
-    depends_on:
-      - valkey-node-0
-    environment:
-      - 'ALLOW_EMPTY_PASSWORD=yes'
-      - 'VALKEY_CLUSTER_REPLICAS=1'
-      - 'VALKEY_NODES=valkey-node-0'
-      - 'VALKEY_CLUSTER_CREATOR=yes'
-
-networks:
-  valkey_subnet:
-    name: valkey_subnet
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.15.1.0/24
-          gateway: 172.15.1.1
+    volumes:
+      - type: tmpfs
+        target: /bitnamilegacy/valkey
