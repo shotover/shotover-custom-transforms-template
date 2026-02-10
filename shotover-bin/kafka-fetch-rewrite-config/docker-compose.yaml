@@ -1,6 +1,6 @@
 networks:
-  cluster_subnet:
-    name: cluster_subnet
+  kafka_subnet:
+    name: kafka_subnet 
     driver: bridge
     ipam:
       driver: default
@@ -11,7 +11,7 @@ services:
   kafka0:
     image: 'bitnamilegacy/kafka:3.9.0-debian-12-r6'
     networks:
-      cluster_subnet:
+      kafka_subnet:
         ipv4_address: 172.16.1.2
     environment:
       KAFKA_CFG_LISTENERS: "BROKER://:9092,CONTROLLER://:9093"

@@ -2,7 +2,7 @@ services:
   valkey-node-0:
     image: bitnamilegacy/valkey-cluster:7.2.5-debian-12-r4
     networks:
-      cluster_subnet:
+      valkey_subnet:
         ipv4_address: 172.15.1.2
     environment:
       - 'ALLOW_EMPTY_PASSWORD=yes'
@@ -11,7 +11,7 @@ services:
   valkey-cluster-init:
     image: bitnamilegacy/valkey-cluster:7.2.5-debian-12-r4
     networks:
-      cluster_subnet:
+      valkey_subnet:
         ipv4_address: 172.15.1.8
     depends_on:
       - valkey-node-0
@@ -22,8 +22,8 @@ services:
       - 'VALKEY_CLUSTER_CREATOR=yes'
 
 networks:
-  cluster_subnet:
-    name: cluster_subnet
+  valkey_subnet:
+    name: valkey_subnet
     driver: bridge
     ipam:
       driver: default
