@@ -7,5 +7,5 @@ sources:
         - ValkeyGetRewrite:
             result: "Rewritten value"
         - ValkeySinkSingle:
-            remote_address: "127.0.0.1:6379"
+            remote_address: "0.0.0.0:6379"
             connect_timeout_ms: 3000
