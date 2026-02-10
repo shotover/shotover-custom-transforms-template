@@ -2,7 +2,7 @@
 sources:
   - Valkey:
       name: "Valkey"
-      listen_addr: "127.0.0.1:6379"
+      listen_addr: "127.0.0.1:6380"
       chain:
         - ValkeyGetRewrite:
             result: "Rewritten value"

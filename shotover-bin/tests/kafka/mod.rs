@@ -3,8 +3,8 @@ use rdkafka::config::ClientConfig;
 use rdkafka::consumer::{Consumer, StreamConsumer};
 use rdkafka::producer::{FutureProducer, FutureRecord};
 use rdkafka::Message;
-use std::time::Duration;
 use serial_test::serial;
+use std::time::Duration;
 
 #[tokio::test(flavor = "multi_thread")]
 #[serial]

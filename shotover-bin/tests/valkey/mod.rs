@@ -22,7 +22,7 @@ async fn test_valkey_get_rewrite() {
     // Setup shotover and the redis server it connects to
     let _compose = docker_compose("valkey-get-rewrite-config/docker-compose.yaml");
     let shotover = shotover("valkey-get-rewrite-config/topology.yaml").await;
-    let mut connection = valkey_connection(6379).await;
+    let mut connection = valkey_connection(6380).await;
 
     // Verify functionality of transform
     assert_ok(
