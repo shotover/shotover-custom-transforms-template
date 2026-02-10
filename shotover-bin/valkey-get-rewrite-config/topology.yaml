@@ -2,10 +2,10 @@
 sources:
   - Valkey:
       name: "Valkey"
-      listen_addr: "0.0.0.0:6380"
+      listen_addr: "127.0.0.1:6380"
       chain:
         - ValkeyGetRewrite:
             result: "Rewritten value"
         - ValkeySinkSingle:
-            remote_address: "0.0.0.0:6379"
+            remote_address: "172.16.1.2:6379"
             connect_timeout_ms: 3000
